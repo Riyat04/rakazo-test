@@ -3,97 +3,404 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to Our Company</title>
+    <title>Project Cost Estimator & Company Platform</title>
     <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --success: #059669;
+            --success-hover: #047857;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --radius: 12px;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+            --transition: all 0.2s ease-in-out;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             line-height: 1.6;
-            color: #333;
-            background-color: #f4f4f9;
+            color: var(--text);
+            background-color: var(--bg);
+            -webkit-font-smoothing: antialiased;
         }
+
         header {
-            background: #2c3e50;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
             color: #fff;
-            padding: 2rem 1rem;
+            padding: 3rem 1.5rem;
             text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
+
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .company-logo {
+            width: 64px;
+            height: 64px;
+            background: var(--primary);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .company-logo svg {
+            width: 36px;
+            height: 36px;
+            fill: #ffffff;
+        }
+
         header h1 {
             font-size: 2.5rem;
-            margin-bottom: 0.5rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            margin-bottom: 0.25rem;
         }
+
         header p {
-            font-size: 1.2rem;
-            color: #bdc3c7;
+            font-size: 1.15rem;
+            color: #94a3b8;
+            max-width: 600px;
         }
+
         main {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 0 1rem;
+            max-width: 840px;
+            margin: 2.5rem auto;
+            padding: 0 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
         }
+
         section {
-            background: #fff;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background: var(--surface);
+            padding: 2.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: var(--transition);
         }
+
+        section:hover {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+        }
+
         section h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.25rem;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 2px solid var(--bg);
+            padding-bottom: 0.75rem;
+        }
+
+        section h2::before {
+            content: '';
+            display: inline-block;
+            width: 6px;
+            height: 24px;
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        p {
+            color: #334155;
             margin-bottom: 1rem;
-            color: #2c3e50;
-            border-bottom: 2px solid #ecf0f1;
-            padding-bottom: 0.5rem;
         }
+
+        p:last-child {
+            margin-bottom: 0;
+        }
+
         .form-group {
-            margin-bottom: 1.2rem;
+            margin-bottom: 1.5rem;
         }
+
         label {
             display: block;
             margin-bottom: 0.5rem;
-            font-weight: bold;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text);
         }
+
+        .required-mark {
+            color: #ef4444;
+            margin-left: 2px;
+        }
+
         input[type="text"],
         input[type="email"],
-        input[type="tel"] {
+        input[type="tel"],
+        textarea,
+        select {
             width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            padding: 0.85rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
             font-size: 1rem;
+            font-family: inherit;
+            background: var(--surface);
+            color: var(--text);
+            transition: var(--transition);
         }
+
+        input[type="text"]:hover,
+        input[type="email"]:hover,
+        input[type="tel"]:hover,
+        textarea:hover,
+        select:hover {
+            border-color: #94a3b8;
+        }
+
+        input[type="text"]:invalid:not(:placeholder-shown),
+        input[type="email"]:invalid:not(:placeholder-shown),
+        input[type="tel"]:invalid:not(:placeholder-shown),
+        textarea:invalid:not(:placeholder-shown) {
+            border-color: #ef4444;
+        }
+
+        .error-message {
+            display: none;
+            font-size: 0.85rem;
+            color: #ef4444;
+            margin-top: 0.35rem;
+        }
+
+        input:invalid:not(:placeholder-shown) ~ .error-message,
+        textarea:invalid:not(:placeholder-shown) ~ .error-message {
+            display: block;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
         button[type="submit"] {
-            background: #3498db;
+            background: var(--primary);
             color: white;
-            padding: 0.75rem 1.5rem;
+            padding: 0.9rem 1.75rem;
             border: none;
-            border-radius: 4px;
+            border-radius: 8px;
             font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: background 0.3s ease;
+            transition: var(--transition);
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
+
         button[type="submit"]:hover {
-            background: #2980b9;
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 12px rgba(37, 99, 235, 0.3);
         }
+
+        button[type="submit"]:active {
+            transform: translateY(0);
+        }
+
+        /* Focus styles for accessibility */
+        input:focus-visible, select:focus-visible, button:focus-visible, textarea:focus-visible, input[type="range"]:focus-visible {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+        }
+
+        /* Cost Estimator Styles */
+        .estimator-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.75rem;
+        }
+
+        .form-group input[type="range"] {
+            padding: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            accent-color: var(--primary);
+            margin-top: 0.5rem;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .slider-value-badge {
+            background: var(--primary);
+            color: white;
+            padding: 0.2rem 0.75rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        fieldset.form-group {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.25rem;
+            margin: 0;
+            background: #fafafa;
+        }
+
+        fieldset.form-group legend {
+            font-weight: 700;
+            padding: 0 0.75rem;
+            color: var(--text);
+            font-size: 1rem;
+        }
+
+        .checkbox-options, .radio-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 0.85rem;
+            margin-top: 0.5rem;
+        }
+
+        .checkbox-label, .radio-label {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: normal;
+            cursor: pointer;
+            padding: 0.75rem 1rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .checkbox-label:hover, .radio-label:hover {
+            border-color: var(--primary);
+            background: #f0f6ff;
+        }
+
+        .checkbox-label input, .radio-label input {
+            width: 1.2rem;
+            height: 1.2rem;
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+
+        .estimator-summary {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .summary-item {
+            text-align: center;
+        }
+
+        .summary-item span {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.35rem;
+        }
+
+        .summary-item strong {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: -0.025em;
+        }
+
+        .cta-button {
+            background: var(--success);
+            color: white;
+            padding: 1rem 1.75rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            width: 100%;
+            box-shadow: 0 4px 6px rgba(5, 150, 105, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .cta-button:hover {
+            background: var(--success-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 12px rgba(5, 150, 105, 0.3);
+        }
+
+        .cta-button:active {
+            transform: translateY(0);
+        }
+
         footer {
             text-align: center;
-            padding: 1.5rem;
-            background: #2c3e50;
-            color: #bdc3c7;
-            margin-top: auto;
+            padding: 2rem 1rem;
+            background: #1e293b;
+            color: #94a3b8;
+            margin-top: 4rem;
+            border-top: 1px solid #334155;
+            font-size: 0.95rem;
         }
-        @media (max-width: 600px) {
+
+        @media (max-width: 640px) {
+            header {
+                padding: 2rem 1rem;
+            }
             header h1 {
                 font-size: 2rem;
             }
             main {
-                margin: 1rem;
+                margin: 1.5rem 1rem;
+                padding: 0;
             }
             section {
                 padding: 1.5rem;
+            }
+            .estimator-summary {
+                flex-direction: column;
+                gap: 1rem;
             }
         }
     </style>
@@ -101,8 +408,15 @@
 <body>
 
     <header>
-        <h1>Welcome to Our Platform</h1>
-        <p>Building innovative solutions for a better tomorrow</p>
+        <div class="header-content">
+            <div class="company-logo" role="img" aria-label="Company Logo">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                </svg>
+            </div>
+            <h1>Welcome to Our Platform</h1>
+            <p>Building innovative software solutions with modern technology, clean design, and reliable performance.</p>
+        </div>
     </header>
 
     <main>
@@ -111,26 +425,103 @@
             <p>We are a dedicated team of professionals committed to delivering high-quality web applications and exceptional user experiences. Our mission is to empower businesses and individuals through modern technology, clean design, and reliable performance.</p>
         </section>
 
+        <section id="cost-estimator">
+            <h2>Project Cost Estimator</h2>
+            <div class="estimator-container">
+                <div class="form-group">
+                    <label for="project-type">Project Type</label>
+                    <select id="project-type" name="project_type">
+                        <option value="website">Website</option>
+                        <option value="mobile">Mobile App</option>
+                        <option value="ecommerce">E-commerce Store</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <div class="slider-header">
+                        <label for="pages-slider">Number of Pages / Screens</label>
+                        <span id="pages-value" class="slider-value-badge">5</span>
+                    </div>
+                    <input type="range" id="pages-slider" name="pages" min="1" max="20" value="5">
+                </div>
+
+                <fieldset class="form-group checkbox-fieldset">
+                    <legend>Optional Extras</legend>
+                    <div class="checkbox-options">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="extra-login" value="login"> Login System (₹10,000)
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="extra-payment" value="payment"> Payment Integration (₹15,000)
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="extra-admin" value="admin"> Admin Dashboard (₹20,000)
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="extra-seo" value="seo"> SEO Setup (₹8,000)
+                        </label>
+                    </div>
+                </fieldset>
+
+                <fieldset class="form-group radio-fieldset">
+                    <legend>Timeline Speed</legend>
+                    <div class="radio-options">
+                        <label class="radio-label">
+                            <input type="radio" name="timeline" id="timeline-standard" value="standard" checked> Standard Speed
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="timeline" id="timeline-rush" value="rush"> Rush Delivery (+30% cost)
+                        </label>
+                    </div>
+                </fieldset>
+
+                <div class="estimator-summary" aria-live="polite">
+                    <div class="summary-item">
+                        <span>Estimated Cost</span>
+                        <strong id="estimated-price">₹45,000</strong>
+                    </div>
+                    <div class="summary-item">
+                        <span>Estimated Timeline</span>
+                        <strong id="estimated-weeks">3 weeks</strong>
+                    </div>
+                </div>
+
+                <button type="button" id="get-quote-btn" class="cta-button">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    Get this quote & populate contact form
+                </button>
+            </div>
+        </section>
+
         <section id="contact">
             <h2>Contact Us</h2>
-            <form action="#" method="POST">
+            <form action="#" method="POST" novalidate>
                 <div class="form-group">
-                    <label for="first-name">First Name</label>
-                    <input type="text" id="first-name" name="first_name" required>
+                    <label for="first-name">First Name <span class="required-mark">*</span></label>
+                    <input type="text" id="first-name" name="first_name" placeholder="Enter your first name" required>
+                    <div class="error-message">Please enter your first name.</div>
                 </div>
                 <div class="form-group">
-                    <label for="last-name">Last Name</label>
-                    <input type="text" id="last-name" name="last_name" required>
+                    <label for="last-name">Last Name <span class="required-mark">*</span></label>
+                    <input type="text" id="last-name" name="last_name" placeholder="Enter your last name" required>
+                    <div class="error-message">Please enter your last name.</div>
                 </div>
                 <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" required>
+                    <label for="email">Email <span class="required-mark">*</span></label>
+                    <input type="email" id="email" name="email" placeholder="name@example.com" required>
+                    <div class="error-message">Please enter a valid email address.</div>
                 </div>
                 <div class="form-group">
-                    <label for="phone">Phone</label>
-                    <input type="tel" id="phone" name="phone" required>
+                    <label for="phone">Phone <span class="required-mark">*</span></label>
+                    <input type="tel" id="phone" name="phone" placeholder="+91 98765 43210" required>
+                    <div class="error-message">Please enter your phone number.</div>
                 </div>
-                <button type="submit">Submit</button>
+                <div class="form-group">
+                    <label for="message">Message / Quote Summary <span class="required-mark">*</span></label>
+                    <textarea id="message" name="message" placeholder="Your quote details or message will appear here..." rows="4" required></textarea>
+                    <div class="error-message">Please enter a message or quote summary.</div>
+                </div>
+                <button type="submit">Submit Request</button>
             </form>
         </section>
     </main>
@@ -139,5 +530,116 @@
         <p>&copy; 2026 Our Company. All rights reserved.</p>
     </footer>
 
+    <script>
+        // Centralized pricing rules object
+        const pricingRules = {
+            projectTypes: {
+                website: { name: 'Website', basePrice: 20000, baseWeeks: 2 },
+                mobile: { name: 'Mobile App', basePrice: 50000, baseWeeks: 4 },
+                ecommerce: { name: 'E-commerce Store', basePrice: 40000, baseWeeks: 3 }
+            },
+            pagePrice: 1500, // per page/screen above 1
+            pageWeeksFactor: 5, // every 5 pages adds 1 week
+            extras: {
+                login: { name: 'Login system', price: 10000, weeks: 1 },
+                payment: { name: 'Payment integration', price: 15000, weeks: 1 },
+                admin: { name: 'Admin dashboard', price: 20000, weeks: 2 },
+                seo: { name: 'SEO setup', price: 8000, weeks: 1 }
+            },
+            timeline: {
+                standard: { name: 'Standard', costMultiplier: 1.0, weeksMultiplier: 1.0 },
+                rush: { name: 'Rush', costMultiplier: 1.3, weeksMultiplier: 0.75 }
+            }
+        };
+
+        function formatINR(amount) {
+            return '₹' + Math.round(amount).toLocaleString('en-IN');
+        }
+
+        function calculateEstimate() {
+            const projectTypeKey = document.getElementById('project-type').value;
+            const pages = parseInt(document.getElementById('pages-slider').value, 10) || 1;
+            document.getElementById('pages-value').textContent = pages;
+
+            const proj = pricingRules.projectTypes[projectTypeKey];
+            let basePrice = proj.basePrice;
+            let baseWeeks = proj.baseWeeks;
+
+            // Pages calculation
+            const extraPages = Math.max(0, pages - 1);
+            let pagesPrice = extraPages * pricingRules.pagePrice;
+            let pagesWeeks = Math.floor(extraPages / pricingRules.pageWeeksFactor);
+
+            let subtotalPrice = basePrice + pagesPrice;
+            let subtotalWeeks = baseWeeks + pagesWeeks;
+
+            // Extras calculation
+            let extrasPrice = 0;
+            let extrasWeeks = 0;
+
+            const extraKeys = ['login', 'payment', 'admin', 'seo'];
+            extraKeys.forEach(key => {
+                const checkbox = document.getElementById(`extra-${key}`);
+                if (checkbox && checkbox.checked) {
+                    extrasPrice += pricingRules.extras[key].price;
+                    extrasWeeks += pricingRules.extras[key].weeks;
+                }
+            });
+
+            let totalBeforeTimeline = subtotalPrice + extrasPrice;
+            let totalWeeksBeforeTimeline = subtotalWeeks + extrasWeeks;
+
+            // Timeline multiplier
+            const timelineRadio = document.querySelector('input[name="timeline"]:checked');
+            const timelineKey = timelineRadio ? timelineRadio.value : 'standard';
+            const timelineRule = pricingRules.timeline[timelineKey] || pricingRules.timeline.standard;
+
+            let finalPrice = totalBeforeTimeline * timelineRule.costMultiplier;
+            let finalWeeks = Math.max(1, Math.round((totalWeeksBeforeTimeline * timelineRule.weeksMultiplier) * 10) / 10);
+            let weeksText = finalWeeks === 1 ? '1 week' : `${finalWeeks} weeks`;
+
+            document.getElementById('estimated-price').textContent = formatINR(finalPrice);
+            document.getElementById('estimated-weeks').textContent = weeksText;
+
+            return {
+                projectType: proj.name,
+                pages: pages,
+                extras: extraKeys.filter(k => document.getElementById(`extra-${k}`).checked).map(k => pricingRules.extras[k].name),
+                timeline: timelineRule.name,
+                price: formatINR(finalPrice),
+                weeks: weeksText
+            };
+        }
+
+        // Event listeners for live update
+        document.getElementById('project-type').addEventListener('change', calculateEstimate);
+        document.getElementById('pages-slider').addEventListener('input', calculateEstimate);
+        ['login', 'payment', 'admin', 'seo'].forEach(key => {
+            document.getElementById(`extra-${key}`).addEventListener('change', calculateEstimate);
+        });
+        document.querySelectorAll('input[name="timeline"]').forEach(radio => {
+            radio.addEventListener('change', calculateEstimate);
+        });
+
+        // Get quote button action
+        document.getElementById('get-quote-btn').addEventListener('click', () => {
+            const summary = calculateEstimate();
+            const messageBox = document.getElementById('message');
+            if (messageBox) {
+                messageBox.value = `Hello,\n\nI would like to get a quote for the following project configuration:\n- Project Type: ${summary.projectType}\n- Pages/Screens: ${summary.pages}\n- Optional Extras: ${summary.extras.length > 0 ? summary.extras.join(', ') : 'None'}\n- Timeline: ${summary.timeline}\n- Estimated Cost: ${summary.price}\n- Estimated Timeline: ${summary.weeks}\n\nPlease contact me with more details.`;
+            }
+            const contactSection = document.getElementById('contact');
+            if (contactSection) {
+                contactSection.scrollIntoView({ behavior: 'smooth' });
+                const firstNameInput = document.getElementById('first-name');
+                if (firstNameInput) {
+                    firstNameInput.focus();
+                }
+            }
+        });
+
+        // Initial calculation on load
+        window.addEventListener('DOMContentLoaded', calculateEstimate);
+    </script>
 </body>
 </html>
