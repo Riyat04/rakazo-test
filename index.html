@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome to Our Company</title>
     <style>
+        html {
+            scroll-behavior: smooth;
+        }
         * {
             box-sizing: border-box;
             margin: 0;
@@ -14,22 +17,84 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
             color: #1f2937;
-            background-color: #faf5ff; /* light purple tint */
+            background-color: #faf5ff;
         }
-        header {
-            background: #5b21b6; /* deep purple */
+        /* Navigation Bar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: #4c1d95;
             color: #fff;
-            padding: 2.5rem 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .nav-brand {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #fff;
+            text-decoration: none;
+        }
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        .nav-links a {
+            color: #e9d5ff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s, transform 0.2s;
+        }
+        .nav-links a:hover {
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            background: none;
+            border: none;
+            cursor: pointer;
+            gap: 6px;
+            padding: 4px;
+        }
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: #e9d5ff;
+            border-radius: 2px;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        .hamburger.active span:nth-child(1) {
+            transform: translateY(9px) rotate(45deg);
+        }
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+        .hamburger.active span:nth-child(3) {
+            transform: translateY(-9px) rotate(-45deg);
+        }
+
+        header {
+            background: #5b21b6;
+            color: #fff;
+            padding: 3.5rem 1rem;
             text-align: center;
             box-shadow: 0 4px 6px -1px rgba(91, 33, 182, 0.2);
         }
         header h1 {
-            font-size: 2.5rem;
+            font-size: 2.75rem;
             margin-bottom: 0.5rem;
+            animation: fadeInDown 0.8s ease-out;
         }
         header p {
             font-size: 1.2rem;
             color: #e9d5ff;
+            animation: fadeInUp 0.8s ease-out;
         }
         main {
             max-width: 800px;
@@ -43,6 +108,10 @@
             border-radius: 12px;
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
             border: 1px solid #f3e8ff;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        section:hover {
+            box-shadow: 0 10px 15px -3px rgba(91, 33, 182, 0.08);
         }
         section h2 {
             margin-bottom: 1.2rem;
@@ -97,33 +166,98 @@
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s, transform 0.1s;
+            transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 140px;
         }
         button[type="submit"]:hover {
             background: #6d28d9;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+            transform: translateY(-1px);
         }
         button[type="submit"]:active {
-            transform: scale(0.98);
+            transform: translateY(0) scale(0.98);
+        }
+        button[type="submit"]:disabled {
+            background: #c4b5fd;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 0.8s ease-in-out infinite;
+            margin-right: 8px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
         .success-message {
             background: #d1fae5;
             color: #065f46;
-            padding: 1rem;
-            border-radius: 6px;
+            padding: 1.25rem;
+            border-radius: 8px;
             margin-bottom: 1.5rem;
             display: none;
             border: 1px solid #a7f3d0;
+            animation: fadeIn 0.5s ease-out;
+            box-shadow: 0 2px 4px rgba(6, 95, 70, 0.05);
+        }
+        .success-message h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
         footer {
             text-align: center;
-            padding: 1.5rem;
-            background: #5b21b6;
+            padding: 2rem;
+            background: #4c1d95;
             color: #e9d5ff;
             margin-top: auto;
         }
-        @media (max-width: 600px) {
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: #4c1d95;
+                padding: 1.5rem 2rem;
+                box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2);
+                gap: 1rem;
+                border-top: 1px solid rgba(255,255,255,0.1);
+            }
+            .nav-links.active {
+                display: flex;
+            }
+            .hamburger {
+                display: flex;
+            }
             header h1 {
-                font-size: 2rem;
+                font-size: 2.2rem;
             }
             main {
                 margin: 1rem;
@@ -134,7 +268,21 @@
         }
     </style>
 </head>
-<body>
+<body id="top">
+
+    <nav class="navbar">
+        <a href="#top" class="nav-brand">Our Platform</a>
+        <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#top">Home</a></li>
+            <li><a href="#about">About Us</a></li>
+            <li><a href="#contact">Contact Us</a></li>
+        </ul>
+    </nav>
 
     <header>
         <h1>Welcome to Our Platform</h1>
@@ -149,7 +297,10 @@
 
         <section id="contact">
             <h2>Contact Us</h2>
-            <div id="successAlert" class="success-message">Thank you! Your form has been successfully submitted and validated.</div>
+            <div id="successAlert" class="success-message">
+                <h4>🎉 Success!</h4>
+                <p>Thank you for reaching out! Your message has been successfully validated and submitted.</p>
+            </div>
             <form id="contactForm" novalidate>
                 <div class="form-group">
                     <label for="first-name">First Name</label>
@@ -171,7 +322,7 @@
                     <input type="tel" id="phone" name="phone" required placeholder="123-456-7890" pattern="^[0-9\-\+\s\(\)]{7,15}$">
                     <div class="error-message" id="phoneError">Please enter a valid phone number (7 to 15 digits/characters).</div>
                 </div>
-                <button type="submit">Submit</button>
+                <button type="submit" id="submitBtn">Submit</button>
             </form>
         </section>
     </main>
@@ -181,6 +332,24 @@
     </footer>
 
     <script>
+        // Hamburger Menu Toggle
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const navLinks = document.getElementById('navLinks');
+
+        hamburgerBtn.addEventListener('click', () => {
+            hamburgerBtn.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburgerBtn.classList.remove('active');
+                navLinks.classList.remove('active');
+            });
+        });
+
+        // Contact Form Submission & Validation
         document.getElementById('contactForm').addEventListener('submit', function(e) {
             e.preventDefault();
             let isValid = true;
@@ -195,6 +364,7 @@
             const emailError = document.getElementById('emailError');
             const phoneError = document.getElementById('phoneError');
             const successAlert = document.getElementById('successAlert');
+            const submitBtn = document.getElementById('submitBtn');
 
             // Reset states
             [firstName, lastName, email, phone].forEach(input => input.classList.remove('error'));
@@ -232,8 +402,24 @@
             }
 
             if (isValid) {
-                successAlert.style.display = 'block';
-                this.reset();
+                // Show loading state
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="spinner"></span> Submitting...';
+
+                setTimeout(() => {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Submit';
+                    successAlert.style.display = 'block';
+                    successAlert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    this.reset();
+                }, 600);
+            } else {
+                // Scroll to first error
+                const firstError = document.querySelector('input.error');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstError.focus();
+                }
             }
         });
     </script>
