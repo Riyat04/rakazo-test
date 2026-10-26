@@ -10,87 +10,198 @@
             margin: 0;
             padding: 0;
         }
+        html {
+            scroll-behavior: smooth;
+        }
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
             color: #333;
-            background-color: #f4f4f9;
+            background-color: #f8f7fc;
         }
-        header {
-            background: #2c3e50;
+        /* Navbar & Hamburger */
+        nav {
+            background-color: #6b46c1;
             color: #fff;
-            padding: 2rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 1.5rem;
+        }
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+        .nav-links a:hover {
+            color: #e9d8fd;
+            transform: translateY(-1px);
+        }
+        .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        header {
+            background: linear-gradient(135deg, #6b46c1 0%, #553c9a 100%);
+            color: #fff;
+            padding: 4rem 1rem;
             text-align: center;
         }
         header h1 {
-            font-size: 2.5rem;
+            font-size: 3rem;
             margin-bottom: 0.5rem;
+            animation: fadeInDown 0.8s ease;
         }
         header p {
-            font-size: 1.2rem;
-            color: #bdc3c7;
+            font-size: 1.25rem;
+            color: #e9d8fd;
+            animation: fadeInUp 0.8s ease;
         }
         main {
             max-width: 800px;
-            margin: 2rem auto;
+            margin: 2.5rem auto;
             padding: 0 1rem;
         }
         section {
             background: #fff;
-            padding: 2rem;
+            padding: 2.5rem;
             margin-bottom: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(107, 70, 193, 0.05), 0 1px 3px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(107, 70, 193, 0.1);
         }
         section h2 {
-            margin-bottom: 1rem;
-            color: #2c3e50;
-            border-bottom: 2px solid #ecf0f1;
+            margin-bottom: 1.2rem;
+            color: #553c9a;
+            border-bottom: 2px solid #f3e8ff;
             padding-bottom: 0.5rem;
+            font-size: 1.8rem;
         }
         .form-group {
-            margin-bottom: 1.2rem;
+            margin-bottom: 1.25rem;
         }
         label {
             display: block;
             margin-bottom: 0.5rem;
-            font-weight: bold;
+            font-weight: 600;
+            color: #4a5568;
         }
         input[type="text"],
         input[type="email"],
         input[type="tel"] {
             width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            padding: 0.85rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
             font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus {
+            outline: none;
+            border-color: #6b46c1;
+            box-shadow: 0 0 0 3px rgba(107, 70, 193, 0.15);
+        }
+        .error-msg {
+            color: #e53e3e;
+            font-size: 0.875rem;
+            margin-top: 0.3rem;
+            display: none;
         }
         button[type="submit"] {
-            background: #3498db;
+            background: #6b46c1;
             color: white;
-            padding: 0.75rem 1.5rem;
+            padding: 0.85rem 2rem;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: background 0.3s ease;
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 10px rgba(107, 70, 193, 0.3);
         }
         button[type="submit"]:hover {
-            background: #2980b9;
+            background: #553c9a;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(107, 70, 193, 0.4);
+        }
+        button[type="submit"]:active {
+            transform: translateY(0);
+        }
+        .success-banner {
+            display: none;
+            background-color: #c6f6d5;
+            color: #22543d;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            border: 1px solid #9ae6b4;
+            animation: fadeIn 0.5s ease;
         }
         footer {
             text-align: center;
-            padding: 1.5rem;
-            background: #2c3e50;
-            color: #bdc3c7;
-            margin-top: auto;
+            padding: 2rem;
+            background: #2d3748;
+            color: #a0aec0;
+            margin-top: 4rem;
         }
-        @media (max-width: 600px) {
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: #6b46c1;
+                padding: 1rem 2rem;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            }
+            .nav-links.active {
+                display: flex;
+            }
+            .hamburger {
+                display: block;
+            }
             header h1 {
-                font-size: 2rem;
+                font-size: 2.2rem;
             }
             main {
-                margin: 1rem;
+                margin: 1.5rem 1rem;
             }
             section {
                 padding: 1.5rem;
@@ -99,6 +210,15 @@
     </style>
 </head>
 <body>
+
+    <nav>
+        <div class="nav-brand">OurBrand</div>
+        <button class="hamburger" id="hamburger-btn" aria-label="Toggle navigation">&#9776;</button>
+        <ul class="nav-links" id="nav-links">
+            <li><a href="#about">About Us</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
 
     <header>
         <h1>Welcome to Our Platform</h1>
@@ -113,22 +233,29 @@
 
         <section id="contact">
             <h2>Contact Us</h2>
-            <form action="#" method="POST">
+            <div id="success-banner" class="success-banner">
+                Thank you! Your message has been successfully submitted. We will get back to you soon.
+            </div>
+            <form id="contact-form" novalidate>
                 <div class="form-group">
                     <label for="first-name">First Name</label>
                     <input type="text" id="first-name" name="first_name" required>
+                    <div id="first-name-error" class="error-msg">Please enter your first name.</div>
                 </div>
                 <div class="form-group">
                     <label for="last-name">Last Name</label>
                     <input type="text" id="last-name" name="last_name" required>
+                    <div id="last-name-error" class="error-msg">Please enter your last name.</div>
                 </div>
                 <div class="form-group">
                     <label for="email">Email</label>
                     <input type="email" id="email" name="email" required>
+                    <div id="email-error" class="error-msg">Please enter a valid email address.</div>
                 </div>
                 <div class="form-group">
                     <label for="phone">Phone</label>
                     <input type="tel" id="phone" name="phone" required>
+                    <div id="phone-error" class="error-msg">Please enter a valid phone number.</div>
                 </div>
                 <button type="submit">Submit</button>
             </form>
@@ -139,5 +266,91 @@
         <p>&copy; 2026 Our Company. All rights reserved.</p>
     </footer>
 
+    <script>
+        // Hamburger Menu Toggle
+        const hamburgerBtn = document.getElementById('hamburger-btn');
+        const navLinks = document.getElementById('nav-links');
+
+        hamburgerBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // Close mobile menu on link click
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+            });
+        });
+
+        // Form Validation & Interactive Feedback
+        const form = document.getElementById('contact-form');
+        const successBanner = document.getElementById('success-banner');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            let isValid = true;
+
+            // First Name validation
+            const firstName = document.getElementById('first-name');
+            const firstNameError = document.getElementById('first-name-error');
+            if (!firstName.value.trim()) {
+                firstNameError.style.display = 'block';
+                firstName.style.borderColor = '#e53e3e';
+                isValid = false;
+            } else {
+                firstNameError.style.display = 'none';
+                firstName.style.borderColor = '#e2e8f0';
+            }
+
+            // Last Name validation
+            const lastName = document.getElementById('last-name');
+            const lastNameError = document.getElementById('last-name-error');
+            if (!lastName.value.trim()) {
+                lastNameError.style.display = 'block';
+                lastName.style.borderColor = '#e53e3e';
+                isValid = false;
+            } else {
+                lastNameError.style.display = 'none';
+                lastName.style.borderColor = '#e2e8f0';
+            }
+
+            // Email validation
+            const email = document.getElementById('email');
+            const emailError = document.getElementById('email-error');
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!email.value.trim() || !emailRegex.test(email.value)) {
+                emailError.style.display = 'block';
+                email.style.borderColor = '#e53e3e';
+                isValid = false;
+            } else {
+                emailError.style.display = 'none';
+                email.style.borderColor = '#e2e8f0';
+            }
+
+            // Phone validation
+            const phone = document.getElementById('phone');
+            const phoneError = document.getElementById('phone-error');
+            const phoneRegex = /^[\d\s\-\+\(\)]{7,15}$/;
+            if (!phone.value.trim() || !phoneRegex.test(phone.value)) {
+                phoneError.style.display = 'block';
+                phone.style.borderColor = '#e53e3e';
+                isValid = false;
+            } else {
+                phoneError.style.display = 'none';
+                phone.style.borderColor = '#e2e8f0';
+            }
+
+            if (isValid) {
+                successBanner.style.display = 'block';
+                form.reset();
+                successBanner.scrollIntoView({ behavior: 'smooth' });
+                setTimeout(() => {
+                    successBanner.style.display = 'none';
+                }, 6000);
+            } else {
+                successBanner.style.display = 'none';
+            }
+        });
+    </script>
 </body>
 </html>
