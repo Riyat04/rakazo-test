@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Cost Estimator & Company Platform</title>
@@ -224,6 +225,40 @@
         button[type="submit"]:active {
             transform: translateY(0);
         }
+
+        button[type="submit"]:disabled {
+            background: var(--text-muted);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            opacity: 0.7;
+        }
+
+        .form-feedback {
+            margin-top: 1rem;
+            padding: 0.85rem 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .form-feedback.success {
+            background-color: #ecfdf5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+
+        .form-feedback.error {
+            background-color: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
 
         /* Focus styles for accessibility */
         input:focus-visible, select:focus-visible, button:focus-visible, textarea:focus-visible, input[type="range"]:focus-visible {
@@ -521,6 +556,7 @@
                     <textarea id="message" name="message" placeholder="Your quote details or message will appear here..." rows="4" required></textarea>
                     <div class="error-message">Please enter a message or quote summary.</div>
                 </div>
+                                <div id="form-feedback" class="form-feedback" aria-live="polite" style="display: none;"></div>
                 <button type="submit">Submit Request</button>
             </form>
         </section>
@@ -639,6 +675,81 @@
         });
 
         // Initial calculation on load
+        
+        // Supabase integration and contact form submission
+        const SUPABASE_URL = 'https://purqxbeuswvgvpdxhuxp.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_5NLpNCg-sYz4hYFij1HYoQ_lmN2uwmq';
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const contactForm = document.querySelector('#contact form');
+        if (contactForm) {
+            const submitBtn = contactForm.querySelector('button[type="submit"]');
+            const feedbackDiv = document.getElementById('form-feedback');
+
+            contactForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (feedbackDiv) {
+                    feedbackDiv.style.display = 'none';
+                    feedbackDiv.className = 'form-feedback';
+                }
+
+                if (!contactForm.checkValidity()) {
+                    contactForm.reportValidity();
+                    return;
+                }
+
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.dataset.originalHtml = submitBtn.innerHTML;
+                    submitBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; margin-right: 0.5rem;"><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"></path></svg> Sending...';
+                }
+
+                try {
+                    const firstName = document.getElementById('first-name').value.trim();
+                    const lastName = document.getElementById('last-name').value.trim();
+                    const email = document.getElementById('email').value.trim();
+                    const phone = document.getElementById('phone').value.trim();
+                    const message = document.getElementById('message').value.trim();
+
+                    const { data, error } = await supabaseClient
+                        .from('contact_messages')
+                        .insert([
+                            {
+                                first_name: firstName,
+                                last_name: lastName,
+                                email: email,
+                                phone: phone,
+                                message: message
+                            }
+                        ]);
+
+                    if (error) {
+                        throw error;
+                    }
+
+                    if (feedbackDiv) {
+                        feedbackDiv.textContent = 'Message sent';
+                        feedbackDiv.classList.add('success');
+                        feedbackDiv.style.display = 'block';
+                    }
+                    contactForm.reset();
+                    calculateEstimate();
+                } catch (err) {
+                    console.error('Supabase error:', err);
+                    if (feedbackDiv) {
+                        feedbackDiv.textContent = 'Failed to send message. Please try again later.';
+                        feedbackDiv.classList.add('error');
+                        feedbackDiv.style.display = 'block';
+                    }
+                } finally {
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = submitBtn.dataset.originalHtml || 'Submit Request';
+                    }
+                }
+            });
+        }
+
         window.addEventListener('DOMContentLoaded', calculateEstimate);
     </script>
 </body>
