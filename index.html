@@ -58,12 +58,18 @@
         }
         input[type="text"],
         input[type="email"],
-        input[type="tel"] {
+        input[type="tel"],
+        textarea,
+        select {
             width: 100%;
             padding: 0.75rem;
             border: 1px solid #ccc;
             border-radius: 4px;
             font-size: 1rem;
+            background: #fff;
+        }
+        textarea {
+            resize: vertical;
         }
         button[type="submit"] {
             background: #3498db;
@@ -78,6 +84,105 @@
         button[type="submit"]:hover {
             background: #2980b9;
         }
+
+        /* Focus styles for accessibility */
+        input:focus-visible, select:focus-visible, button:focus-visible, textarea:focus-visible, input[type="range"]:focus-visible {
+            outline: 3px solid #3498db;
+            outline-offset: 2px;
+        }
+
+        /* Cost Estimator Styles */
+        .estimator-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-group input[type="range"] {
+            padding: 0;
+            cursor: pointer;
+        }
+
+        fieldset.form-group {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 1rem;
+            margin: 0;
+        }
+
+        fieldset.form-group legend {
+            font-weight: bold;
+            padding: 0 0.5rem;
+            color: #2c3e50;
+        }
+
+        .checkbox-options, .radio-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .checkbox-label, .radio-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: normal;
+            cursor: pointer;
+        }
+
+        .checkbox-label input, .radio-label input {
+            width: 1.1rem;
+            height: 1.1rem;
+            cursor: pointer;
+        }
+
+        .estimator-summary {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            padding: 1.25rem;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .summary-item {
+            text-align: center;
+        }
+
+        .summary-item span {
+            display: block;
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 0.25rem;
+        }
+
+        .summary-item strong {
+            font-size: 1.5rem;
+            color: #2c3e50;
+        }
+
+        .cta-button {
+            background: #27ae60;
+            color: white;
+            padding: 0.85rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            text-align: center;
+            width: 100%;
+        }
+
+        .cta-button:hover {
+            background: #219653;
+        }
+
         footer {
             text-align: center;
             padding: 1.5rem;
@@ -111,6 +216,68 @@
             <p>We are a dedicated team of professionals committed to delivering high-quality web applications and exceptional user experiences. Our mission is to empower businesses and individuals through modern technology, clean design, and reliable performance.</p>
         </section>
 
+        <section id="cost-estimator">
+            <h2>Project Cost Estimator</h2>
+            <div class="estimator-container">
+                <div class="form-group">
+                    <label for="project-type">Project Type</label>
+                    <select id="project-type" name="project_type">
+                        <option value="website">Website</option>
+                        <option value="mobile">Mobile App</option>
+                        <option value="ecommerce">E-commerce Store</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="pages-slider">Number of Pages / Screens: <span id="pages-value">5</span></label>
+                    <input type="range" id="pages-slider" name="pages" min="1" max="20" value="5">
+                </div>
+
+                <fieldset class="form-group checkbox-fieldset">
+                    <legend>Optional Extras</legend>
+                    <div class="checkbox-options">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="extra-login" value="login"> Login System (₹10,000)
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="extra-payment" value="payment"> Payment Integration (₹15,000)
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="extra-admin" value="admin"> Admin Dashboard (₹20,000)
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="extra-seo" value="seo"> SEO Setup (₹8,000)
+                        </label>
+                    </div>
+                </fieldset>
+
+                <fieldset class="form-group radio-fieldset">
+                    <legend>Timeline Speed</legend>
+                    <div class="radio-options">
+                        <label class="radio-label">
+                            <input type="radio" name="timeline" id="timeline-standard" value="standard" checked> Standard
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="timeline" id="timeline-rush" value="rush"> Rush (+30% cost)
+                        </label>
+                    </div>
+                </fieldset>
+
+                <div class="estimator-summary" aria-live="polite">
+                    <div class="summary-item">
+                        <span>Estimated Cost</span>
+                        <strong id="estimated-price">₹45,000</strong>
+                    </div>
+                    <div class="summary-item">
+                        <span>Estimated Timeline</span>
+                        <strong id="estimated-weeks">3 weeks</strong>
+                    </div>
+                </div>
+
+                <button type="button" id="get-quote-btn" class="cta-button">Get this quote</button>
+            </div>
+        </section>
+
         <section id="contact">
             <h2>Contact Us</h2>
             <form action="#" method="POST">
@@ -130,6 +297,10 @@
                     <label for="phone">Phone</label>
                     <input type="tel" id="phone" name="phone" required>
                 </div>
+                <div class="form-group">
+                    <label for="message">Message / Quote Summary</label>
+                    <textarea id="message" name="message" rows="4" required></textarea>
+                </div>
                 <button type="submit">Submit</button>
             </form>
         </section>
@@ -139,5 +310,116 @@
         <p>&copy; 2026 Our Company. All rights reserved.</p>
     </footer>
 
+    <script>
+        // Centralized pricing rules object
+        const pricingRules = {
+            projectTypes: {
+                website: { name: 'Website', basePrice: 20000, baseWeeks: 2 },
+                mobile: { name: 'Mobile App', basePrice: 50000, baseWeeks: 4 },
+                ecommerce: { name: 'E-commerce Store', basePrice: 40000, baseWeeks: 3 }
+            },
+            pagePrice: 1500, // per page/screen above 1
+            pageWeeksFactor: 5, // every 5 pages adds 1 week
+            extras: {
+                login: { name: 'Login system', price: 10000, weeks: 1 },
+                payment: { name: 'Payment integration', price: 15000, weeks: 1 },
+                admin: { name: 'Admin dashboard', price: 20000, weeks: 2 },
+                seo: { name: 'SEO setup', price: 8000, weeks: 1 }
+            },
+            timeline: {
+                standard: { name: 'Standard', costMultiplier: 1.0, weeksMultiplier: 1.0 },
+                rush: { name: 'Rush', costMultiplier: 1.3, weeksMultiplier: 0.75 }
+            }
+        };
+
+        function formatINR(amount) {
+            return '₹' + Math.round(amount).toLocaleString('en-IN');
+        }
+
+        function calculateEstimate() {
+            const projectTypeKey = document.getElementById('project-type').value;
+            const pages = parseInt(document.getElementById('pages-slider').value, 10) || 1;
+            document.getElementById('pages-value').textContent = pages;
+
+            const proj = pricingRules.projectTypes[projectTypeKey];
+            let basePrice = proj.basePrice;
+            let baseWeeks = proj.baseWeeks;
+
+            // Pages calculation
+            const extraPages = Math.max(0, pages - 1);
+            let pagesPrice = extraPages * pricingRules.pagePrice;
+            let pagesWeeks = Math.floor(extraPages / pricingRules.pageWeeksFactor);
+
+            let subtotalPrice = basePrice + pagesPrice;
+            let subtotalWeeks = baseWeeks + pagesWeeks;
+
+            // Extras calculation
+            let extrasPrice = 0;
+            let extrasWeeks = 0;
+
+            const extraKeys = ['login', 'payment', 'admin', 'seo'];
+            extraKeys.forEach(key => {
+                const checkbox = document.getElementById(`extra-${key}`);
+                if (checkbox && checkbox.checked) {
+                    extrasPrice += pricingRules.extras[key].price;
+                    extrasWeeks += pricingRules.extras[key].weeks;
+                }
+            });
+
+            let totalBeforeTimeline = subtotalPrice + extrasPrice;
+            let totalWeeksBeforeTimeline = subtotalWeeks + extrasWeeks;
+
+            // Timeline multiplier
+            const timelineRadio = document.querySelector('input[name="timeline"]:checked');
+            const timelineKey = timelineRadio ? timelineRadio.value : 'standard';
+            const timelineRule = pricingRules.timeline[timelineKey] || pricingRules.timeline.standard;
+
+            let finalPrice = totalBeforeTimeline * timelineRule.costMultiplier;
+            let finalWeeks = Math.max(1, Math.round((totalWeeksBeforeTimeline * timelineRule.weeksMultiplier) * 10) / 10);
+            let weeksText = finalWeeks === 1 ? '1 week' : `${finalWeeks} weeks`;
+
+            document.getElementById('estimated-price').textContent = formatINR(finalPrice);
+            document.getElementById('estimated-weeks').textContent = weeksText;
+
+            return {
+                projectType: proj.name,
+                pages: pages,
+                extras: extraKeys.filter(k => document.getElementById(`extra-${k}`).checked).map(k => pricingRules.extras[k].name),
+                timeline: timelineRule.name,
+                price: formatINR(finalPrice),
+                weeks: weeksText
+            };
+        }
+
+        // Event listeners for live update
+        document.getElementById('project-type').addEventListener('change', calculateEstimate);
+        document.getElementById('pages-slider').addEventListener('input', calculateEstimate);
+        ['login', 'payment', 'admin', 'seo'].forEach(key => {
+            document.getElementById(`extra-${key}`).addEventListener('change', calculateEstimate);
+        });
+        document.querySelectorAll('input[name="timeline"]').forEach(radio => {
+            radio.addEventListener('change', calculateEstimate);
+        });
+
+        // Get quote button action
+        document.getElementById('get-quote-btn').addEventListener('click', () => {
+            const summary = calculateEstimate();
+            const messageBox = document.getElementById('message');
+            if (messageBox) {
+                messageBox.value = `Hello,\n\nI would like to get a quote for the following project configuration:\n- Project Type: ${summary.projectType}\n- Pages/Screens: ${summary.pages}\n- Optional Extras: ${summary.extras.length > 0 ? summary.extras.join(', ') : 'None'}\n- Timeline: ${summary.timeline}\n- Estimated Cost: ${summary.price}\n- Estimated Timeline: ${summary.weeks}\n\nPlease contact me with more details.`;
+            }
+            const contactSection = document.getElementById('contact');
+            if (contactSection) {
+                contactSection.scrollIntoView({ behavior: 'smooth' });
+                const firstNameInput = document.getElementById('first-name');
+                if (firstNameInput) {
+                    firstNameInput.focus();
+                }
+            }
+        });
+
+        // Initial calculation on load
+        window.addEventListener('DOMContentLoaded', calculateEstimate);
+    </script>
 </body>
 </html>
