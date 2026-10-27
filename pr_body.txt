@@ -1,0 +1,13 @@
+Fixes #16
+
+What I changed:
+- Replaced the placeholder index.html with a fully styled Sticky Notes Board web page.
+- Implemented soft pastel color palette (yellow, pink, blue, lavender, mint, peach) and purple & white header branding as requested in the theme and document requirements.
+- Arranged sticky notes in a tidy, responsive CSS grid with subtle shadows, rounded corners, and decorative tape elements.
+- Added interactive category filter buttons (All, Ideas, To Do, Reminders, Personal) for instant filtering of sticky notes.
+- Ensured full responsiveness across desktop, tablet, and mobile viewports.
+
+How I tested it:
+- Verified the page renders cleanly as a sticky-note board with consistent pastel styling.
+- Tested category filtering functionality across all categories.
+- Checked responsive layout and spacing on mobile and desktop viewports.
