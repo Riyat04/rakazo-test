@@ -56,8 +56,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     filterTabs.addEventListener('click', (e) => {
         if (e.target.classList.contains('filter-btn')) {
-            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+                btn.setAttribute('aria-selected', 'false');
+            });
             e.target.classList.add('active');
+            e.target.setAttribute('aria-selected', 'true');
             currentFilter = e.target.getAttribute('data-filter');
             renderTasks();
         }
@@ -128,18 +132,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
             card.innerHTML = `
                 <div class="task-info">
-                    <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''}>
+                    <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''} aria-label="Mark task '${escapeHtml(task.text)}' as completed">
                     <div class="task-details">
                         <span class="task-title">${escapeHtml(task.text)}</span>
                         <div class="task-meta">
-                            <span class="priority-badge ${task.priority.toLowerCase()}">${task.priority}</span>
+                            <span class="priority-badge ${task.priority.toLowerCase()}">${task.priority} Priority</span>
                             ${task.dueDate ? `<span>Due: ${escapeHtml(task.dueDate)}</span>` : ''}
                         </div>
                     </div>
                 </div>
                 <div class="task-actions">
-                    <button class="action-btn edit-btn" title="Edit Task">Edit</button>
-                    <button class="action-btn delete-btn" title="Delete Task">Delete</button>
+                    <button class="action-btn edit-btn" aria-label="Edit task: ${escapeHtml(task.text)}">Edit</button>
+                    <button class="action-btn delete-btn" aria-label="Delete task: ${escapeHtml(task.text)}">Delete</button>
                 </div>
             `;
             taskList.appendChild(card);
@@ -147,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function escapeHtml(str) {
-        return str.replace(/[&<>'"]/g, 
+        return str.replace(/[&<>'\"]/g, 
             tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
         );
     }
