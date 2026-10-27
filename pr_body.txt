@@ -1,13 +1,12 @@
-Fixes #16
+Fixes #23, #24, #25
 
-What I changed:
-- Replaced the placeholder index.html with a fully styled Sticky Notes Board web page.
-- Implemented soft pastel color palette (yellow, pink, blue, lavender, mint, peach) and purple & white header branding as requested in the theme and document requirements.
-- Arranged sticky notes in a tidy, responsive CSS grid with subtle shadows, rounded corners, and decorative tape elements.
-- Added interactive category filter buttons (All, Ideas, To Do, Reminders, Personal) for instant filtering of sticky notes.
-- Ensured full responsiveness across desktop, tablet, and mobile viewports.
+### What was changed:
+- Implemented the complete Creative Project Manager web application ("Sundays") in `index.html`.
+- **Issue #23**: Landing/Welcome page, Authentication flows (Sign Up, Sign In, Password Reset, Sign Out), User Onboarding setup, Profile & Settings view, and consistent Black & Pink dark theme.
+- **Issue #24**: Main Dashboard view with overview metrics and recent activities, Sidebar Navigation, Projects List view, and Team Management with member invitations and role management (Owner, Project Manager, Member).
+- **Issue #25**: Active project workspace with Timeline / Gantt chart view, Kanban board with task statuses (To Do, In Progress, In Review, Done) and priorities, task creation & status updates, and interactive Task Detail Slide-Over panel featuring comments, attachments, and activity history.
 
-How I tested it:
-- Verified the page renders cleanly as a sticky-note board with consistent pastel styling.
-- Tested category filtering functionality across all categories.
-- Checked responsive layout and spacing on mobile and desktop viewports.
+### How it was tested:
+- Verified local rendering of all views (Landing, Auth, Onboarding, Dashboard, Projects, Kanban, Gantt, Team, Settings, Slide-over panel).
+- Tested interactive workflows: signing up, logging in, creating projects and tasks, updating task statuses, adding comments and attachments, inviting team members, and switching between Kanban and Timeline views.
+- Checked responsiveness and black & pink dark theme styling across layouts.

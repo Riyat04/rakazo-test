@@ -1,342 +1,1609 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sticky Notes Board</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <title>Sundays - Creative Project Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-pastel: #fbf8f5;
-            --purple-main: #6d28d9;
-            --purple-light: #8b5cf6;
-            --purple-dark: #4c1d95;
-            --purple-bg: #f3e8ff;
-            --text-main: #1f2937;
-            --text-muted: #4b5563;
-            --shadow: 0 10px 25px -5px rgba(109, 40, 217, 0.1), 0 8px 10px -6px rgba(109, 40, 217, 0.05);
-            --radius: 16px;
+            --bg-main: #090510;
+            --bg-sidebar: #0f081d;
+            --bg-card: #150d27;
+            --bg-card-hover: #1e1335;
+            --bg-input: #1a1030;
+            --border-color: #2b1948;
+            --border-focus: #ec4899;
+            --pink-primary: #ec4899;
+            --pink-hover: #db2777;
+            --pink-light: #f472b6;
+            --pink-glow: rgba(236, 72, 153, 0.25);
+            --text-main: #f9fafb;
+            --text-muted: #9ca3af;
+            --text-dim: #6b7280;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --transition: all 0.2s ease-in-out;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
         }
 
         body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background-color: var(--bg-pastel);
+            background-color: var(--bg-main);
             color: var(--text-main);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
         }
 
-        header {
-            background: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%);
-            color: #ffffff;
-            padding: 2.5rem 1.5rem;
-            text-align: center;
-            box-shadow: 0 4px 20px rgba(124, 58, 237, 0.25);
+        button, input, select, textarea {
+            font-family: inherit;
+            color: inherit;
         }
 
-        .header-content {
+        /* Focus rings for accessibility */
+        a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+            outline: 2px solid var(--pink-primary);
+            outline-offset: 2px;
+        }
+
+        /* Utility classes */
+        .hidden { display: none !important; }
+        .flex { display: flex; }
+        .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .gap-2 { gap: 0.5rem; }
+        .gap-4 { gap: 1rem; }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1.25rem;
+            font-weight: 500;
+            font-size: 0.875rem;
+            border-radius: var(--radius-sm);
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: var(--pink-primary);
+            color: #ffffff;
+            box-shadow: 0 4px 14px var(--pink-glow);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--pink-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background-color: var(--bg-card);
+            border-color: var(--border-color);
+            color: var(--text-main);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--bg-card-hover);
+            border-color: var(--pink-primary);
+        }
+
+        .btn-danger {
+            background-color: rgba(239, 68, 68, 0.15);
+            color: var(--danger);
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-danger:hover {
+            background-color: var(--danger);
+            color: #fff;
+        }
+
+        /* Forms & Inputs */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 0.9375rem;
+            color: var(--text-main);
+            transition: var(--transition);
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            border-color: var(--pink-primary);
+            box-shadow: 0 0 0 3px var(--pink-glow);
+        }
+
+        /* ---------------- LANDING VIEW ---------------- */
+        #landing-view {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: radial-gradient(circle at 50% 20%, #20103f 0%, var(--bg-main) 70%);
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 3rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+            text-decoration: none;
+        }
+
+        .logo i {
+            color: var(--pink-primary);
+        }
+
+        .hero-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 4rem 1.5rem;
             max-width: 900px;
             margin: 0 auto;
         }
 
-        header h1 {
-            font-size: 2.5rem;
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.375rem 0.875rem;
+            background: rgba(236, 72, 153, 0.1);
+            border: 1px solid rgba(236, 72, 153, 0.3);
+            border-radius: 50px;
+            font-size: 0.875rem;
+            color: var(--pink-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-title span {
+            background: linear-gradient(135deg, #f472b6 0%, #ec4899 50%, #db2777 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.125rem;
+            color: var(--text-muted);
+            margin-bottom: 2.5rem;
+            max-width: 650px;
+            line-height: 1.6;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        /* ---------------- AUTH VIEW (Sign Up / Sign In / Reset) ---------------- */
+        #auth-view {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: radial-gradient(circle at 30% 30%, #20103f 0%, var(--bg-main) 70%);
+        }
+
+        .auth-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 440px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .auth-header h2 {
+            font-size: 1.75rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
-            letter-spacing: -0.025em;
         }
 
-        header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
+        .auth-header p {
+            color: var(--text-muted);
+            font-size: 0.875rem;
         }
 
-        main {
-            max-width: 1200px;
+        .auth-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .auth-footer a {
+            color: var(--pink-primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* ---------------- ONBOARDING VIEW ---------------- */
+        #onboarding-view {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .onboarding-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 3rem;
             width: 100%;
-            margin: 2rem auto;
-            padding: 0 1.5rem;
+            max-width: 600px;
+        }
+
+        /* ---------------- APP LAYOUT (Dashboard, Projects, etc.) ---------------- */
+        #app-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 260px;
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            transition: var(--transition);
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sidebar-nav {
             flex: 1;
+            padding: 1.5rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.875rem;
+            padding: 0.75rem 1rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: var(--radius-sm);
+            font-weight: 500;
+            font-size: 0.9375rem;
+            transition: var(--transition);
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: var(--text-main);
+            background-color: var(--bg-card-hover);
+        }
+
+        .nav-item.active {
+            color: var(--pink-primary);
+            background-color: rgba(236, 72, 153, 0.1);
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-footer {
+            padding: 1.25rem 1.5rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .user-profile-summary {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: white;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .topbar {
+            height: 70px;
+            background-color: var(--bg-sidebar);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+        }
+
+        .topbar-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .content-body {
+            padding: 2rem;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        /* ---------------- VIEWS STYLING ---------------- */
+        .view-container {
             display: flex;
             flex-direction: column;
             gap: 2rem;
         }
 
-        .controls-bar {
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .stat-card .label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.25rem;
+        }
+
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        /* Projects Grid */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .project-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .project-card:hover {
+            border-color: var(--pink-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(236, 72, 153, 0.1);
+        }
+
+        /* Project Workspace & Timeline */
+        .workspace-tabs {
+            display: flex;
+            gap: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .workspace-tab {
+            padding: 0.75rem 1rem;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-weight: 500;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+        }
+
+        .workspace-tab.active {
+            color: var(--pink-primary);
+            border-bottom-color: var(--pink-primary);
+        }
+
+        /* Kanban Board */
+        .kanban-board {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(280px, 1fr));
+            gap: 1.5rem;
+            overflow-x: auto;
+            padding-bottom: 1rem;
+        }
+
+        .kanban-column {
+            background-color: var(--bg-sidebar);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            display: flex;
+            flex-direction: column;
+            max-height: calc(100vh - 280px);
+        }
+
+        .kanban-col-header {
+            padding: 1rem;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-            background: #ffffff;
-            padding: 1.25rem 1.5rem;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            border: 1px solid #e9d5ff;
         }
 
-        .category-filters {
+        .kanban-cards {
+            padding: 1rem;
+            overflow-y: auto;
             display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
+            flex-direction: column;
+            gap: 1rem;
+            flex: 1;
         }
 
-        .filter-btn {
-            background: #f3e8ff;
-            color: #6d28d9;
-            border: none;
-            padding: 0.6rem 1.25rem;
-            border-radius: 9999px;
-            font-weight: 600;
+        .task-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 1rem;
             cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 0.95rem;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
         }
 
-        .filter-btn:hover, .filter-btn.active {
-            background: var(--purple-main);
-            color: #ffffff;
+        .task-card:hover {
+            border-color: var(--pink-primary);
             transform: translateY(-1px);
         }
 
-        .board-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.75rem;
-            align-content: start;
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.625rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 500;
         }
 
-        .sticky-note {
-            position: relative;
-            padding: 1.75rem;
-            border-radius: 12px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.04);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        .badge-urgent { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
+        .badge-high { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
+        .badge-medium { background: rgba(59, 130, 246, 0.15); color: var(--info); }
+        .badge-low { background: rgba(156, 163, 175, 0.15); color: var(--text-muted); }
+
+        /* Timeline / Gantt View */
+        .gantt-container {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            overflow-x: auto;
+        }
+
+        .gantt-timeline-header {
+            display: grid;
+            grid-template-columns: 250px repeat(7, 120px);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.75rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .gantt-row {
+            display: grid;
+            grid-template-columns: 250px repeat(7, 120px);
+            align-items: center;
+            padding: 0.875rem 0;
+            border-bottom: 1px solid rgba(43, 25, 72, 0.5);
+            font-size: 0.875rem;
+        }
+
+        .gantt-bar {
+            background: linear-gradient(135deg, var(--pink-primary) 0%, #8b5cf6 100%);
+            height: 28px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            padding: 0 0.75rem;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 500;
+            box-shadow: 0 2px 8px var(--pink-glow);
+        }
+
+        /* Slide-over panel for Task Detail */
+        .slide-over-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            display: flex;
+            justify-content: flex-end;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .slide-over-panel {
+            width: 100%;
+            max-width: 600px;
+            background-color: var(--bg-sidebar);
+            height: 100%;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            min-height: 240px;
-            border: 1px solid rgba(0,0,0,0.04);
+            border-left: 1px solid var(--border-color);
+            animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow-y: auto;
         }
 
-        .sticky-note:hover {
-            transform: translateY(-4px) rotate(0.5deg);
-            box-shadow: 0 16px 30px rgba(0,0,0,0.1), 0 4px 8px rgba(0,0,0,0.06);
-        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
 
-        /* Pastel Sticky Note Colors */
-        .note-yellow { background: #fef08a; color: #713f12; }
-        .note-pink { background: #fbcfe8; color: #831843; }
-        .note-blue { background: #bfdbfe; color: #1e3a8a; }
-        .note-lavender { background: #e9d5ff; color: #581c87; }
-        .note-mint { background: #a7f3d0; color: #065f46; }
-        .note-peach { background: #fed7aa; color: #7c2d12; }
-
-        .note-tape {
-            position: absolute;
-            top: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 22px;
-            background: rgba(255, 255, 255, 0.5);
-            border: 1px dashed rgba(0, 0, 0, 0.15);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            pointer-events: none;
-        }
-
-        .note-header {
+        /* Modal dialog */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 0.75rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px dashed rgba(0,0,0,0.15);
+            justify-content: center;
+            padding: 1rem;
         }
 
-        .note-category {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            font-weight: 700;
-            opacity: 0.8;
-            background: rgba(255,255,255,0.6);
-            padding: 0.2rem 0.6rem;
-            border-radius: 4px;
-        }
-
-        .note-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 0.75rem;
-            line-height: 1.3;
-        }
-
-        .note-body {
-            font-size: 1rem;
-            line-height: 1.5;
-            opacity: 0.95;
-            flex: 1;
-            word-break: break-word;
-        }
-
-        .note-footer {
-            margin-top: 1rem;
-            font-size: 0.8rem;
-            opacity: 0.75;
-            text-align: right;
-        }
-
-        footer {
-            text-align: center;
+        .modal-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 500px;
             padding: 2rem;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            border-top: 1px solid #e9d5ff;
-            margin-top: auto;
-            background: #ffffff;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.6);
         }
 
-        @media (max-width: 640px) {
-            header h1 { font-size: 2rem; }
-            .board-grid { grid-template-columns: 1fr; }
-            .controls-bar { flex-direction: column; align-items: stretch; }
-            .category-filters { justify-content: center; }
+        /* Responsive */
+        @media(max-width: 1024px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .main-content { margin-left: 0; }
+            .kanban-board { grid-template-columns: repeat(2, minmax(280px, 1fr)); }
+        }
+
+        @media(max-width: 640px) {
+            .kanban-board { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <header>
-        <div class="header-content">
-            <h1>✨ Sticky Notes Board</h1>
-            <p>Your delightful digital space for ideas, to-dos, reminders, and personal notes.</p>
-        </div>
-    </header>
 
-    <main>
-        <div class="controls-bar">
-            <div class="category-filters" id="categoryFilters">
-                <button class="filter-btn active" data-filter="all">All Notes</button>
-                <button class="filter-btn" data-filter="ideas">Ideas</button>
-                <button class="filter-btn" data-filter="todo">To Do</button>
-                <button class="filter-btn" data-filter="reminders">Reminders</button>
-                <button class="filter-btn" data-filter="personal">Personal</button>
+    <!-- ================= LANDING VIEW ================= -->
+    <div id="landing-view">
+        <nav class="navbar">
+            <a href="#" class="logo">
+                <i class="fa-solid fa-moon"></i> Sundays
+            </a>
+            <div class="flex gap-2">
+                <button class="btn btn-secondary" onclick="showAuth('signin')">Sign In</button>
+                <button class="btn btn-primary" onclick="showAuth('signup')">Get Started</button>
             </div>
-        </div>
+        </nav>
 
-        <div class="board-grid" id="boardGrid">
-            <!-- Note 1 -->
-            <div class="sticky-note note-yellow" data-category="ideas">
-                <div class="note-tape"></div>
-                <div>
-                    <div class="note-header">
-                        <span class="note-category">Ideas</span>
-                    </div>
-                    <h3 class="note-title">Cat Studio Branding</h3>
-                    <p class="note-body">Explore new cute pastel color palettes and playful typography for the upcoming design studio launch.</p>
-                </div>
-                <div class="note-footer">Oct 27, 2026</div>
+        <header class="hero-section">
+            <div class="hero-badge">
+                <i class="fa-solid fa-sparkles"></i> The Ultimate Creative Project Manager
             </div>
-
-            <!-- Note 2 -->
-            <div class="sticky-note note-lavender" data-category="todo">
-                <div class="note-tape"></div>
-                <div>
-                    <div class="note-header">
-                        <span class="note-category">To Do</span>
-                    </div>
-                    <h3 class="note-title">Review Wireframes</h3>
-                    <p class="note-body">Complete CSS style verification across desktop, tablet, and mobile viewports with the QA team.</p>
-                </div>
-                <div class="note-footer">Oct 27, 2026</div>
+            <h1 class="hero-title">Manage Projects with <span>Precision & Style</span></h1>
+            <p class="hero-subtitle">Streamline your creative agency or studio workflows with timeline views, kanban boards, real-time collaboration, and gorgeous dark mode aesthetics.</p>
+            <div class="hero-actions">
+                <button class="btn btn-primary" style="padding: 0.875rem 2rem; font-size: 1rem;" onclick="showAuth('signup')">Start Free Workspace</button>
+                <button class="btn btn-secondary" style="padding: 0.875rem 2rem; font-size: 1rem;" onclick="showAuth('signin')">Sign In to Dashboard</button>
             </div>
+        </header>
+    </div>
 
-            <!-- Note 3 -->
-            <div class="sticky-note note-pink" data-category="reminders">
-                <div class="note-tape"></div>
-                <div>
-                    <div class="note-header">
-                        <span class="note-category">Reminders</span>
-                    </div>
-                    <h3 class="note-title">Team Sync Call</h3>
-                    <p class="note-body">Join the weekly sync at 3:00 PM to discuss deployment schedule and milestone progress.</p>
-                </div>
-                <div class="note-footer">Today, 3:00 PM</div>
+    <!-- ================= AUTH VIEW ================= -->
+    <div id="auth-view" class="hidden">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h2 id="auth-title">Welcome to Sundays</h2>
+                <p id="auth-subtitle">Sign in to your creative workspace</p>
             </div>
-
-            <!-- Note 4 -->
-            <div class="sticky-note note-blue" data-category="personal">
-                <div class="note-tape"></div>
-                <div>
-                    <div class="note-header">
-                        <span class="note-category">Personal</span>
-                    </div>
-                    <h3 class="note-title">Grocery & Coffee</h3>
-                    <p class="note-body">Pick up organic coffee beans, oat milk, fresh berries, and artisan bread from the local market.</p>
+            <form id="auth-form" onsubmit="handleAuthSubmit(event)">
+                <div id="auth-name-group" class="form-group hidden">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" id="auth-name" class="form-input" placeholder="Alex Morgan">
                 </div>
-                <div class="note-footer">Tomorrow</div>
-            </div>
-
-            <!-- Note 5 -->
-            <div class="sticky-note note-mint" data-category="ideas">
-                <div class="note-tape"></div>
-                <div>
-                    <div class="note-header">
-                        <span class="note-category">Ideas</span>
-                    </div>
-                    <h3 class="note-title">Interactive Animations</h3>
-                    <p class="note-body">Add smooth drag-and-drop or pin animations for sticky notes to enhance user delight.</p>
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" id="auth-email" class="form-input" required placeholder="alex@studio.com">
                 </div>
-                <div class="note-footer">Backlog</div>
-            </div>
-
-            <!-- Note 6 -->
-            <div class="sticky-note note-peach" data-category="todo">
-                <div class="note-tape"></div>
-                <div>
-                    <div class="note-header">
-                        <span class="note-category">To Do</span>
-                    </div>
-                    <h3 class="note-title">Documentation Update</h3>
-                    <p class="note-body">Update README and user guides with new pastel theme styling instructions and screenshots.</p>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="auth-password" class="form-input" required placeholder="••••••••">
                 </div>
-                <div class="note-footer">In Progress</div>
+                <div id="auth-error" class="hidden" style="color: var(--danger); font-size: 0.875rem; margin-bottom: 1rem;"></div>
+                <button type="submit" id="auth-submit-btn" class="btn btn-primary" style="width: 100%;">Sign In</button>
+            </form>
+            <div class="auth-footer" id="auth-footer-text">
+                Don't have an account? <a href="#" onclick="toggleAuthMode('signup'); return false;">Sign Up</a>
             </div>
         </div>
-    </main>
+    </div>
 
-    <footer>
-        <p>&copy; 2026 Rakazo Test. Built with care and pastel creativity.</p>
-    </footer>
+    <!-- ================= ONBOARDING VIEW ================= -->
+    <div id="onboarding-view" class="hidden">
+        <div class="onboarding-card">
+            <div class="auth-header">
+                <h2>Set Up Your Workspace</h2>
+                <p>Tell us a bit about your creative studio or team.</p>
+            </div>
+            <form onsubmit="handleOnboardingSubmit(event)">
+                <div class="form-group">
+                    <label class="form-label">Workspace / Studio Name</label>
+                    <input type="text" id="onboarding-workspace" class="form-input" required placeholder="PixelCraft Studio">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Primary Industry</label>
+                    <select id="onboarding-industry" class="form-select">
+                        <option value="Design & Branding">Design & Branding</option>
+                        <option value="Web & Software Development">Web & Software Development</option>
+                        <option value="Marketing & Advertising">Marketing & Advertising</option>
+                        <option value="Video & Production">Video & Production</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Complete Setup</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= APP LAYOUT ================= -->
+    <div id="app-layout" class="hidden">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="#" class="logo" style="font-size: 1.25rem;">
+                    <i class="fa-solid fa-moon"></i> <span id="sidebar-workspace-name">Sundays</span>
+                </a>
+                <button class="btn btn-secondary" style="padding: 0.25rem 0.5rem; display: none;" id="sidebar-close" onclick="toggleSidebar()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" onclick="switchView('dashboard'); return false;">
+                    <i class="fa-solid fa-chart-pie"></i> Dashboard
+                </a>
+                <a href="#" class="nav-item" onclick="switchView('projects'); return false;">
+                    <i class="fa-solid fa-folder-kanban"></i> Projects
+                </a>
+                <a href="#" class="nav-item" onclick="switchView('messages'); return false;">
+                    <i class="fa-solid fa-comments"></i> Messages
+                </a>
+                <a href="#" class="nav-item" onclick="switchView('activity'); return false;">
+                    <i class="fa-solid fa-clock-rotate-left"></i> Activity
+                </a>
+                <a href="#" class="nav-item" onclick="switchView('team'); return false;">
+                    <i class="fa-solid fa-users"></i> Team Members
+                </a>
+                <a href="#" class="nav-item" onclick="switchView('settings'); return false;">
+                    <i class="fa-solid fa-gear"></i> Settings
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-profile-summary">
+                    <div class="avatar" id="sidebar-user-avatar">AM</div>
+                    <div>
+                        <div id="sidebar-user-name" style="font-size: 0.875rem; font-weight: 600;">Alex Morgan</div>
+                        <div id="sidebar-user-role" style="font-size: 0.75rem; color: var(--text-muted);">Workspace Owner</div>
+                    </div>
+                </div>
+                <button class="btn btn-secondary" style="padding: 0.375rem 0.5rem;" title="Sign Out" onclick="signOut()"><i class="fa-solid fa-right-from-bracket"></i></button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header class="topbar">
+                <div class="flex items-center gap-4">
+                    <button class="btn btn-secondary md:hidden" style="padding: 0.5rem 0.75rem;" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+                    <h1 class="topbar-title" id="topbar-title">Dashboard</h1>
+                </div>
+                <div class="topbar-actions">
+                    <button class="btn btn-primary" onclick="openCreateProjectModal()"><i class="fa-solid fa-plus"></i> New Project</button>
+                </div>
+            </header>
+
+            <div class="content-body" id="content-body">
+                <!-- Dynamic views render here -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals & Slide-overs container -->
+    <div id="modal-container"></div>
+    <div id="slide-over-container"></div>
 
     <script>
-        const filterButtons = document.querySelectorAll('.filter-btn');
-        const stickyNotes = document.querySelectorAll('.sticky-note');
+        // Initial Mock Database State
+        let appState = {
+            currentUser: null,
+            authMode: 'signin', // 'signin', 'signup', 'reset'
+            currentView: 'dashboard',
+            activeProjectId: null,
+            workspaces: JSON.parse(localStorage.getItem('sundays_workspaces')) || [{ id: 'ws-1', name: 'PixelCraft Studio', owner: 'Alex Morgan' }],
+            users: JSON.parse(localStorage.getItem('sundays_users')) || [
+                { id: 'u-1', name: 'Alex Morgan', email: 'alex@studio.com', role: 'Owner' },
+                { id: 'u-2', name: 'Sarah Jenkins', email: 'sarah@studio.com', role: 'Project Manager' },
+                { id: 'u-3', name: 'David Lee', email: 'david@studio.com', role: 'Member' }
+            ],
+            projects: JSON.parse(localStorage.getItem('sundays_projects')) || [
+                {
+                    id: 'p-1',
+                    name: 'Brand Redesign 2026',
+                    client: 'Acme Corp',
+                    status: 'In Progress',
+                    dueDate: '2026-11-15',
+                    description: 'Complete brand overhaul including typography, logo, and marketing collateral.',
+                    tasks: [
+                        { id: 't-1', title: 'Logo Concepts', status: 'Done', priority: 'High', assignee: 'Sarah Jenkins', dueDate: '2026-10-20', description: 'Create 3 initial logo directions.', comments: [{ author: 'Alex', text: 'Looks great!' }], attachments: ['logo_v1.png'] },
+                        { id: 't-2', title: 'Typography System', status: 'In Progress', priority: 'Urgent', assignee: 'Alex Morgan', dueDate: '2026-10-30', description: 'Select primary and secondary fonts.', comments: [], attachments: [] },
+                        { id: 't-3', title: 'Brand Guidelines PDF', status: 'To Do', priority: 'Medium', assignee: 'David Lee', dueDate: '2026-11-05', description: 'Compile rules into PDF.', comments: [], attachments: [] }
+                    ]
+                },
+                {
+                    id: 'p-2',
+                    name: 'Mobile App UI/UX',
+                    client: 'FinTech Plus',
+                    status: 'In Progress',
+                    dueDate: '2026-12-01',
+                    description: 'Design intuitive iOS and Android mobile app flows.',
+                    tasks: [
+                        { id: 't-4', title: 'User Journey Wireframes', status: 'In Review', priority: 'High', assignee: 'Sarah Jenkins', dueDate: '2026-10-28', description: 'Wireframe onboarding and dashboard screens.', comments: [], attachments: [] }
+                    ]
+                }
+            ],
+            activities: JSON.parse(localStorage.getItem('sundays_activities')) || [
+                { id: 'a-1', text: 'Alex Morgan created project Brand Redesign 2026', time: '2 hours ago' },
+                { id: 'a-2', text: 'Sarah Jenkins completed task Logo Concepts', time: '5 hours ago' }
+            ]
+        };
 
-        filterButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                filterButtons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
+        function saveState() {
+            localStorage.setItem('sundays_workspaces', JSON.stringify(appState.workspaces));
+            localStorage.setItem('sundays_users', JSON.stringify(appState.users));
+            localStorage.setItem('sundays_projects', JSON.stringify(appState.projects));
+            localStorage.setItem('sundays_activities', JSON.stringify(appState.activities));
+        }
 
-                const filter = button.getAttribute('data-filter');
+        // App Initialization
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedUser = localStorage.getItem('sundays_current_user');
+            if (savedUser) {
+                appState.currentUser = JSON.parse(savedUser);
+                startApp();
+            } else {
+                showLanding();
+            }
+        });
 
-                stickyNotes.forEach(note => {
-                    if (filter === 'all' || note.getAttribute('data-category') === filter) {
-                        note.style.display = 'flex';
-                    } else {
-                        note.style.display = 'none';
-                    }
+        function showLanding() {
+            document.getElementById('landing-view').classList.remove('hidden');
+            document.getElementById('auth-view').classList.add('hidden');
+            document.getElementById('onboarding-view').classList.add('hidden');
+            document.getElementById('app-layout').classList.add('hidden');
+        }
+
+        function showAuth(mode) {
+            appState.authMode = mode;
+            document.getElementById('landing-view').classList.add('hidden');
+            document.getElementById('auth-view').classList.remove('hidden');
+            document.getElementById('onboarding-view').classList.add('hidden');
+            document.getElementById('app-layout').classList.add('hidden');
+
+            const title = document.getElementById('auth-title');
+            const subtitle = document.getElementById('auth-subtitle');
+            const nameGroup = document.getElementById('auth-name-group');
+            const submitBtn = document.getElementById('auth-submit-btn');
+            const footerText = document.getElementById('auth-footer-text');
+
+            if (mode === 'signup') {
+                title.textContent = 'Create Account';
+                subtitle.textContent = 'Join Sundays to manage your creative projects';
+                nameGroup.classList.remove('hidden');
+                submitBtn.textContent = 'Sign Up';
+                footerText.innerHTML = 'Already have an account? <a href="#" onclick="showAuth(\'signin\'); return false;">Sign In</a>';
+            } else {
+                title.textContent = 'Welcome Back';
+                subtitle.textContent = 'Sign in to your creative workspace';
+                nameGroup.classList.add('hidden');
+                submitBtn.textContent = 'Sign In';
+                footerText.innerHTML = 'Don\'t have an account? <a href="#" onclick="showAuth(\'signup\'); return false; ">Sign Up</a>';
+            }
+        }
+
+        function toggleAuthMode(mode) {
+            showAuth(mode);
+        }
+
+        function handleAuthSubmit(e) {
+            e.preventDefault();
+            const email = document.getElementById('auth-email').value;
+            const password = document.getElementById('auth-password').value;
+            const errorDiv = document.getElementById('auth-error');
+
+            if (!email || !password) {
+                errorDiv.textContent = 'Please fill in all required fields.';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+
+            if (appState.authMode === 'signup') {
+                const name = document.getElementById('auth-name').value || 'New User';
+                const newUser = { id: 'u-' + Date.now(), name, email, role: 'Owner' };
+                appState.users.push(newUser);
+                appState.currentUser = newUser;
+                localStorage.setItem('sundays_current_user', JSON.stringify(newUser));
+                saveState();
+                
+                // Show Onboarding
+                document.getElementById('auth-view').classList.add('hidden');
+                document.getElementById('onboarding-view').classList.remove('hidden');
+            } else {
+                let user = appState.users.find(u => u.email === email);
+                if (!user) {
+                    user = { id: 'u-' + Date.now(), name: email.split('@')[0], email, role: 'Member' };
+                    appState.users.push(user);
+                }
+                appState.currentUser = user;
+                localStorage.setItem('sundays_current_user', JSON.stringify(user));
+                saveState();
+                startApp();
+            }
+        }
+
+        function handleOnboardingSubmit(e) {
+            e.preventDefault();
+            const wsName = document.getElementById('onboarding-workspace').value;
+            if (wsName) {
+                appState.workspaces[0].name = wsName;
+                appState.workspaces[0].owner = appState.currentUser.name;
+                saveState();
+            }
+            startApp();
+        }
+
+        function startApp() {
+            document.getElementById('landing-view').classList.add('hidden');
+            document.getElementById('auth-view').classList.add('hidden');
+            document.getElementById('onboarding-view').classList.add('hidden');
+            document.getElementById('app-layout').classList.remove('hidden');
+
+            document.getElementById('sidebar-workspace-name').textContent = appState.workspaces[0].name;
+            document.getElementById('sidebar-user-name').textContent = appState.currentUser.name;
+            document.getElementById('sidebar-user-role').textContent = appState.currentUser.role;
+            document.getElementById('sidebar-user-avatar').textContent = appState.currentUser.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+
+            switchView(appState.currentView);
+        }
+
+        function signOut() {
+            localStorage.removeItem('sundays_current_user');
+            appState.currentUser = null;
+            showLanding();
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function switchView(viewName, param) {
+            appState.currentView = viewName;
+            if (param) appState.activeProjectId = param;
+
+            document.querySelectorAll('.sidebar-nav .nav-item').forEach(el => el.classList.remove('active'));
+            event && event.currentTarget && event.currentTarget.classList.add && event.currentTarget.classList.add('active');
+
+            const titleEl = document.getElementById('topbar-title');
+            const bodyEl = document.getElementById('content-body');
+
+            if (viewName === 'dashboard') {
+                titleEl.textContent = 'Dashboard';
+                bodyEl.innerHTML = renderDashboardView();
+            } else if (viewName === 'projects') {
+                titleEl.textContent = 'Projects List';
+                bodyEl.innerHTML = renderProjectsView();
+            } else if (viewName === 'project-detail') {
+                const proj = appState.projects.find(p => p.id === appState.activeProjectId);
+                titleEl.textContent = proj ? proj.name : 'Project Workspace';
+                bodyEl.innerHTML = renderProjectDetailView(proj);
+            } else if (viewName === 'messages') {
+                titleEl.textContent = 'Team Messages';
+                bodyEl.innerHTML = renderMessagesView();
+            } else if (viewName === 'activity') {
+                titleEl.textContent = 'Activity History';
+                bodyEl.innerHTML = renderActivityView();
+            } else if (viewName === 'team') {
+                titleEl.textContent = 'Team Management';
+                bodyEl.innerHTML = renderTeamView();
+            } else if (viewName === 'settings') {
+                titleEl.textContent = 'Workspace Settings';
+                bodyEl.innerHTML = renderSettingsView();
+            }
+        }
+
+        // --- RENDER VIEWS ---
+
+        function renderDashboardView() {
+            const activeProjectsCount = appState.projects.filter(p => p.status === 'In Progress').length;
+            let totalTasks = 0;
+            let completedTasks = 0;
+            appState.projects.forEach(p => {
+                p.tasks.forEach(t => {
+                    totalTasks++;
+                    if (t.status === 'Done') completedTasks++;
                 });
             });
-        });
+
+            return `
+                <div class="view-container">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <span class="label">Active Projects</span>
+                            <span class="value">${activeProjectsCount}</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="label">Completed Tasks</span>
+                            <span class="value">${completedTasks} / ${totalTasks}</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="label">Team Members</span>
+                            <span class="value">${appState.users.length}</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="label">Workspace</span>
+                            <span class="value" style="font-size: 1.25rem; font-weight: 600; margin-top: 0.25rem;">${appState.workspaces[0].name}</span>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Recent Projects</h2>
+                            <button class="btn btn-secondary" onclick="switchView('projects')">View All</button>
+                        </div>
+                        <div class="projects-grid">
+                            ${appState.projects.map(p => `
+                                <div class="project-card" onclick="switchView('project-detail', '${p.id}')">
+                                    <div class="flex justify-between items-center">
+                                        <h3 style="font-weight: 600; font-size: 1rem;">${p.name}</h3>
+                                        <span class="badge badge-medium">${p.status}</span>
+                                    </div>
+                                    <p style="color: var(--text-muted); font-size: 0.875rem;">Client: ${p.client}</p>
+                                    <div style="font-size: 0.75rem; color: var(--text-dim);">Due: ${p.dueDate} • Tasks: ${p.tasks.length}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderProjectsView() {
+            return `
+                <div class="view-container">
+                    <div class="flex justify-between items-center">
+                        <input type="text" class="form-input" placeholder="Search projects..." style="max-width: 300px;" oninput="filterProjects(this.value)">
+                        <button class="btn btn-primary" onclick="openCreateProjectModal()"><i class="fa-solid fa-plus"></i> New Project</button>
+                    </div>
+                    <div class="projects-grid">
+                        ${appState.projects.map(p => `
+                            <div class="project-card" onclick="switchView('project-detail', '${p.id}')">
+                                <div class="flex justify-between items-center">
+                                    <h3 style="font-weight: 600; font-size: 1.125rem;">${p.name}</h3>
+                                    <span class="badge badge-medium">${p.status}</span>
+                                </div>
+                                <p style="color: var(--text-muted); font-size: 0.875rem;">${p.description}</p>
+                                <div class="flex justify-between items-center" style="margin-top: auto; font-size: 0.75rem; color: var(--text-dim);">
+                                    <span>Client: ${p.client}</span>
+                                    <span>Due ${p.dueDate}</span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderProjectDetailView(proj) {
+            if (!proj) return '<div>Project not found</div>';
+            return `
+                <div class="view-container">
+                    <div class="card" style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.25rem;">${proj.name}</h2>
+                            <p style="color: var(--text-muted); font-size: 0.875rem;">Client: ${proj.client} • Due: ${proj.dueDate}</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="btn btn-primary" onclick="openCreateTaskModal('${proj.id}')"><i class="fa-solid fa-plus"></i> Add Task</button>
+                        </div>
+                    </div>
+
+                    <div class="workspace-tabs">
+                        <button class="workspace-tab active" onclick="switchProjectTab('kanban', this)">Kanban Board</button>
+                        <button class="workspace-tab" onclick="switchProjectTab('gantt', this)">Timeline / Gantt</button>
+                    </div>
+
+                    <div id="project-tab-content">
+                        ${renderKanbanBoard(proj)}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderKanbanBoard(proj) {
+            const statuses = ['To Do', 'In Progress', 'In Review', 'Done'];
+            return `
+                <div class="kanban-board">
+                    ${statuses.map(status => `
+                        <div class="kanban-column">
+                            <div class="kanban-col-header">
+                                <span>${status}</span>
+                                <span class="badge badge-low">${proj.tasks.filter(t => t.status === status).length}</span>
+                            </div>
+                            <div class="kanban-cards">
+                                ${proj.tasks.filter(t => t.status === status).map(t => `
+                                    <div class="task-card" onclick="openTaskDetail('${proj.id}', '${t.id}')">
+                                        <div class="flex justify-between items-center">
+                                            <span style="font-weight: 600; font-size: 0.9375rem;">${t.title}</span>
+                                            <span class="badge badge-${t.priority.toLowerCase()}">${t.priority}</span>
+                                        </div>
+                                        <p style="color: var(--text-muted); font-size: 0.8125rem;">${t.description}</p>
+                                        <div class="flex justify-between items-center" style="font-size: 0.75rem; color: var(--text-dim); margin-top: 0.5rem;">
+                                            <span><i class="fa-solid fa-user"></i> ${t.assignee}</span>
+                                            <span>${t.dueDate}</span>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function renderGanttView(proj) {
+            return `
+                <div class="gantt-container">
+                    <div class="gantt-timeline-header">
+                        <div>Task Name</div>
+                        <div>Week 1</div>
+                        <div>Week 2</div>
+                        <div>Week 3</div>
+                        <div>Week 4</div>
+                        <div>Week 5</div>
+                        <div>Week 6</div>
+                        <div>Week 7</div>
+                    </div>
+                    <div>
+                        ${proj.tasks.map((t, idx) => `
+                            <div class="gantt-row">
+                                <div style="font-weight: 500;">${t.title}</div>
+                                <div style="grid-column: span ${ (idx % 3) + 2 };">
+                                    <div class="gantt-bar">${t.assignee} (${t.status})</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function switchProjectTab(tabName, btnEl) {
+            document.querySelectorAll('.workspace-tab').forEach(b => b.classList.remove('active'));
+            btnEl.classList.add('active');
+            const proj = appState.projects.find(p => p.id === appState.activeProjectId);
+            const container = document.getElementById('project-tab-content');
+            if (tabName === 'kanban') {
+                container.innerHTML = renderKanbanBoard(proj);
+            } else {
+                container.innerHTML = renderGanttView(proj);
+            }
+        }
+
+        function renderMessagesView() {
+            return `
+                <div class="card" style="height: calc(100vh - 160px); display: flex; flex-direction: column;">
+                    <div class="card-header">
+                        <h2 class="card-title">Studio Team Discussion</h2>
+                    </div>
+                    <div style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1rem;">
+                        <div style="background: var(--bg-sidebar); padding: 1rem; border-radius: var(--radius-sm); max-width: 80%;">
+                            <div style="font-weight: 600; font-size: 0.875rem; color: var(--pink-light);">Sarah Jenkins</div>
+                            <div style="font-size: 0.9375rem; margin-top: 0.25rem;">Hey team, I uploaded the new wireframes for mobile app. Please review!</div>
+                            <div style="font-size: 0.75rem; color: var(--text-dim); margin-top: 0.25rem;">10:30 AM</div>
+                        </div>
+                        <div style="background: var(--bg-sidebar); padding: 1rem; border-radius: var(--radius-sm); max-width: 80%; align-self: flex-end;">
+                            <div style="font-weight: 600; font-size: 0.875rem; color: var(--pink-light);">Alex Morgan</div>
+                            <div style="font-size: 0.9375rem; margin-top: 0.25rem;">Checking them out now. Great work!</div>
+                            <div style="font-size: 0.75rem; color: var(--text-dim); margin-top: 0.25rem;">10:32 AM</div>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="text" class="form-input" placeholder="Type a message..." id="chat-input">
+                        <button class="btn btn-primary" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderActivityView() {
+            return `
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Activity Audit Trail</h2>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        ${appState.activities.map(a => `
+                            <div style="display: flex; justify-content: space-between; padding: 0.875rem 0; border-bottom: 1px solid var(--border-color);">
+                                <span>${a.text}</span>
+                                <span style="font-size: 0.75rem; color: var(--text-dim);">${a.time}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderTeamView() {
+            return `
+                <div class="view-container">
+                    <div class="flex justify-between items-center">
+                        <h2 style="font-size: 1.25rem; font-weight: 600;">Workspace Members</h2>
+                        <button class="btn btn-primary" onclick="openInviteModal()"><i class="fa-solid fa-user-plus"></i> Invite Member</button>
+                    </div>
+                    <div class="card">
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            ${appState.users.map(u => `
+                                <div class="flex justify-between items-center" style="padding: 0.75rem 0; border-bottom: 1px solid var(--border-color);">
+                                    <div class="flex items-center gap-3">
+                                        <div class="avatar">${u.name.substring(0,2).toUpperCase()}</div>
+                                        <div>
+                                            <div style="font-weight: 600;">${u.name}</div>
+                                            <div style="font-size: 0.75rem; color: var(--text-muted);">${u.email}</div>
+                                        </div>
+                                    </div>
+                                    <span class="badge badge-medium">${u.role}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderSettingsView() {
+            return `
+                <div class="card" style="max-width: 600px;">
+                    <div class="card-header">
+                        <h2 class="card-title">Profile & Workspace Settings</h2>
+                    </div>
+                    <form onsubmit="handleSettingsUpdate(event)">
+                        <div class="form-group">
+                            <label class="form-label">Your Name</label>
+                            <input type="text" class="form-input" id="settings-name" value="${appState.currentUser.name}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Workspace Name</label>
+                            <input type="text" class="form-input" id="settings-ws" value="${appState.workspaces[0].name}">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
+            `;
+        }
+
+        // --- MODALS & SLIDE-OVERS ---
+
+        function openCreateProjectModal() {
+            document.getElementById('modal-container').innerHTML = `
+                <div class="modal-backdrop" onclick="closeModal(event)">
+                    <div class="modal-card" onclick="event.stopPropagation()">
+                        <div class="card-header">
+                            <h2 class="card-title">Create New Project</h2>
+                            <button class="btn btn-secondary" style="padding: 0.25rem 0.5rem;" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                        <form onsubmit="handleCreateProject(event)">
+                            <div class="form-group">
+                                <label class="form-label">Project Name</label>
+                                <input type="text" id="new-proj-name" class="form-input" required placeholder="E-commerce Redesign">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Client Name</label>
+                                <input type="text" id="new-proj-client" class="form-input" required placeholder="Stellar Inc">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Due Date</label>
+                                <input type="date" id="new-proj-date" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Description</label>
+                                <textarea id="new-proj-desc" class="form-textarea" rows="3" placeholder="Project goals and scope..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">Create Project</button>
+                        </form>
+                    </div>
+                </div>
+            `;
+        }
+
+        function handleCreateProject(e) {
+            e.preventDefault();
+            const name = document.getElementById('new-proj-name').value;
+            const client = document.getElementById('new-proj-client').value;
+            const dueDate = document.getElementById('new-proj-date').value;
+            const description = document.getElementById('new-proj-desc').value;
+
+            const newProj = {
+                id: 'p-' + Date.now(),
+                name, client, status: 'In Progress', dueDate, description, tasks: []
+            };
+            appState.projects.push(newProj);
+            appState.activities.unshift({ id: 'a-' + Date.now(), text: `${appState.currentUser.name} created project ${name}`, time: 'Just now' });
+            saveState();
+            closeModal();
+            switchView('projects');
+        }
+
+        function openCreateTaskModal(projId) {
+            document.getElementById('modal-container').innerHTML = `
+                <div class="modal-backdrop" onclick="closeModal(event)">
+                    <div class="modal-card" onclick="event.stopPropagation()">
+                        <div class="card-header">
+                            <h2 class="card-title">Add New Task</h2>
+                            <button class="btn btn-secondary" style="padding: 0.25rem 0.5rem;" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                        <form onsubmit="handleCreateTask(event, '${projId}')">
+                            <div class="form-group">
+                                <label class="form-label">Task Title</label>
+                                <input type="text" id="new-task-title" class="form-input" required placeholder="Design Homepage UI">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Priority</label>
+                                <select id="new-task-priority" class="form-select">
+                                    <option value="Low">Low</option>
+                                    <option value="Medium" selected>Medium</option>
+                                    <option value="High">High</option>
+                                    <option value="Urgent">Urgent</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Assignee</label>
+                                <select id="new-task-assignee" class="form-select">
+                                    ${appState.users.map(u => `<option value="${u.name}">${u.name}</option>`).join('')}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Due Date</label>
+                                <input type="date" id="new-task-date" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Description</label>
+                                <textarea id="new-task-desc" class="form-textarea" rows="2" placeholder="Task details..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">Create Task</button>
+                        </form>
+                    </div>
+                </div>
+            `;
+        }
+
+        function handleCreateTask(e, projId) {
+            e.preventDefault();
+            const title = document.getElementById('new-task-title').value;
+            const priority = document.getElementById('new-task-priority').value;
+            const assignee = document.getElementById('new-task-assignee').value;
+            const dueDate = document.getElementById('new-task-date').value;
+            const description = document.getElementById('new-task-desc').value;
+
+            const proj = appState.projects.find(p => p.id === projId);
+            if (proj) {
+                proj.tasks.push({
+                    id: 't-' + Date.now(),
+                    title, status: 'To Do', priority, assignee, dueDate, description, comments: [], attachments: []
+                });
+                saveState();
+                closeModal();
+                switchView('project-detail', projId);
+            }
+        }
+
+        function openTaskDetail(projId, taskId) {
+            const proj = appState.projects.find(p => p.id === projId);
+            const task = proj.tasks.find(t => t.id === taskId);
+            if (!task) return;
+
+            document.getElementById('slide-over-container').innerHTML = `
+                <div class="slide-over-backdrop" onclick="closeSlideOver(event)">
+                    <div class="slide-over-panel" onclick="event.stopPropagation()">
+                        <div class="card-header" style="padding: 1.5rem; border-bottom: 1px solid var(--border-color);">
+                            <h2 style="font-size: 1.25rem; font-weight: 700;">${task.title}</h2>
+                            <button class="btn btn-secondary" style="padding: 0.25rem 0.5rem;" onclick="closeSlideOver()"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                        <div style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; overflow-y: auto;">
+                            <div>
+                                <label class="form-label">Status</label>
+                                <select class="form-select" onchange="updateTaskStatus('${projId}', '${taskId}', this.value)">
+                                    ${['To Do', 'In Progress', 'In Review', 'Done'].map(s => `<option value="${s}" ${task.status === s ? 'selected' : ''}>${s}</option>`).join('')}
+                                </select>
+                            </div>
+                            <div>
+                                <label class="form-label">Description</label>
+                                <p style="color: var(--text-muted); font-size: 0.9375rem;">${task.description || 'No description provided.'}</p>
+                            </div>
+                            <div class="flex gap-4" style="font-size: 0.875rem; color: var(--text-muted);">
+                                <div><i class="fa-solid fa-user"></i> ${task.assignee}</div>
+                                <div><i class="fa-solid fa-calendar"></i> ${task.dueDate}</div>
+                            </div>
+                            <div>
+                                <label class="form-label">Attachments (${task.attachments.length})</label>
+                                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                    ${task.attachments.map(att => `<span class="badge badge-medium"><i class="fa-solid fa-file"></i> ${att}</span>`).join('')}
+                                    <button class="btn btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" onclick="addAttachment('${projId}', '${taskId}')"><i class="fa-solid fa-plus"></i> Add file</button>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="form-label">Comments</label>
+                                <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1rem;">
+                                    ${task.comments.map(c => `
+                                        <div style="background: var(--bg-card); padding: 0.75rem; border-radius: var(--radius-sm);">
+                                            <div style="font-weight: 600; font-size: 0.75rem; color: var(--pink-light);">${c.author}</div>
+                                            <div style="font-size: 0.875rem; margin-top: 0.25rem;">${c.text}</div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                <div class="flex gap-2">
+                                    <input type="text" class="form-input" id="task-comment-input" placeholder="Write a comment...">
+                                    <button class="btn btn-primary" onclick="addTaskComment('${projId}', '${taskId}')">Post</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateTaskStatus(projId, taskId, newStatus) {
+            const proj = appState.projects.find(p => p.id === projId);
+            const task = proj.tasks.find(t => t.id === taskId);
+            if (task) {
+                task.status = newStatus;
+                saveState();
+                switchView('project-detail', projId);
+            }
+        }
+
+        function addTaskComment(projId, taskId) {
+            const input = document.getElementById('task-comment-input');
+            const text = input.value.trim();
+            if (!text) return;
+            const proj = appState.projects.find(p => p.id === projId);
+            const task = proj.tasks.find(t => t.id === taskId);
+            if (task) {
+                task.comments.push({ author: appState.currentUser.name, text });
+                saveState();
+                openTaskDetail(projId, taskId);
+            }
+        }
+
+        function addAttachment(projId, taskId) {
+            const filename = prompt('Enter attachment filename:');
+            if (!filename) return;
+            const proj = appState.projects.find(p => p.id === projId);
+            const task = proj.tasks.find(t => t.id === taskId);
+            if (task) {
+                task.attachments.push(filename);
+                saveState();
+                openTaskDetail(projId, taskId);
+            }
+        }
+
+        function openInviteModal() {
+            document.getElementById('modal-container').innerHTML = `
+                <div class="modal-backdrop" onclick="closeModal(event)">
+                    <div class="modal-card" onclick="event.stopPropagation()">
+                        <div class="card-header">
+                            <h2 class="card-title">Invite Team Member</h2>
+                            <button class="btn btn-secondary" style="padding: 0.25rem 0.5rem;" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                        <form onsubmit="handleInviteMember(event)">
+                            <div class="form-group">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" id="invite-name" class="form-input" required placeholder="Jane Doe">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Email Address</label>
+                                <input type="email" id="invite-email" class="form-input" required placeholder="jane@studio.com">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Role</label>
+                                <select id="invite-role" class="form-select">
+                                    <option value="Member">Member</option>
+                                    <option value="Project Manager">Project Manager</option>
+                                    <option value="Owner">Owner</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">Send Invitation</button>
+                        </form>
+                    </div>
+                </div>
+            `;
+        }
+
+        function handleInviteMember(e) {
+            e.preventDefault();
+            const name = document.getElementById('invite-name').value;
+            const email = document.getElementById('invite-email').value;
+            const role = document.getElementById('invite-role').value;
+
+            appState.users.push({ id: 'u-' + Date.now(), name, email, role });
+            saveState();
+            closeModal();
+            switchView('team');
+        }
+
+        function handleSettingsUpdate(e) {
+            e.preventDefault();
+            const name = document.getElementById('settings-name').value;
+            const ws = document.getElementById('settings-ws').value;
+
+            appState.currentUser.name = name;
+            appState.workspaces[0].name = ws;
+            localStorage.setItem('sundays_current_user', JSON.stringify(appState.currentUser));
+            saveState();
+            startApp();
+            alert('Settings updated successfully!');
+        }
+
+        function closeModal() {
+            document.getElementById('modal-container').innerHTML = '';
+        }
+
+        function closeSlideOver() {
+            document.getElementById('slide-over-container').innerHTML = '';
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            if (input.value.trim()) {
+                alert('Message sent to team!');
+                input.value = '';
+            }
+        }
     </script>
 </body>
 </html>
